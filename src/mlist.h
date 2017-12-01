@@ -6,8 +6,8 @@
 //  Copyright © 2017年 darren. All rights reserved.
 //
 
-#ifndef mlist_h
-#define mlist_h
+#ifndef _MLIST_H
+#define _MLIST_H
 
 #include "mbody.h"
 
@@ -23,4 +23,4 @@ private:
     vector<CMS_MBody> * pV;
 }; // end CMS_MList
 
-#endif /* mlist_h */
+#endif /* _MLIST_H */
