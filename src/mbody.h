@@ -27,6 +27,7 @@ class CMS_MBody {
               string & sdrnick,
               uint64_t deadline,
               char level);
+    CMS_MBody(const CMS_MBody& body);
     ～CMS_MBody();
 public:
     uint64_t _msgid;

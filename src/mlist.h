@@ -11,16 +11,31 @@
 
 #include "mbody.h"
 
+typedef struct mnode {
+    CMS_MBody * pMBody;
+    mnode * pHead;
+    mnode * pTail;
+} CMS_MNode;
+
 class CMS_MList {
     CMS_MList();
     ~CMS_MList();
 public:
-    int add(CMS_MBody&);
+    int set(CMS_MBody&);
     int del(uint64_t);
-    CMS_MBody& find(uint64_t);
+    CMS_MBody& get(uint64_t);
+private:
+    int init(int cou);
+    int extend(int cou);
+    CMS_MNode * init_malloc(int cou);
+    int clear();
 private:
     map<uint64_t, pMBody> * pM;
-    vector<CMS_MBody> * pV;
+    CMS_MNode * pHead;
+    CMS_MNode * pTail;
+    CMS_MNode * pFreeHead;
+    CMS_MNode * pFreeTail;
+    int freecou;
 }; // end CMS_MList
 
 #endif /* _MLIST_H */
