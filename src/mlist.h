@@ -23,7 +23,7 @@ class CMS_MList {
 public:
     int set(CMS_MBody&);
     int del(uint64_t);
-    CMS_MBody& get(uint64_t);
+    CMS_MBody* get(uint64_t);
 private:
     int init(int cou);
     int extend(int cou);
@@ -35,6 +35,7 @@ private:
     CMS_MNode * pTail;
     CMS_MNode * pFreeHead;
     CMS_MNode * pFreeTail;
+	int cou;
     int freecou;
 }; // end CMS_MList
 

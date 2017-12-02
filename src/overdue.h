@@ -35,8 +35,11 @@ private:
     void clear();
 private:
     CMS_DueNode * pHead;
-    CMS_DueNode * pFree;
-    int count;
+	CMS_DueNode * pTail;
+    CMS_DueNode * pFreeHead;
+	CMS_DueNode * pFreeTail;
+    int cou;
+	int freecou;
 }; // end CMS_Due
 
 #endif /* overdue_h */
