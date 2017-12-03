@@ -1,8 +1,5 @@
 #include "mbody.h"
 
-CMS_MBody::CMS_MBody() {
-}
-
 CMS_MBody::CMS_MBody(uint64_t msgid,
 		char channel,
 		char type,
@@ -23,15 +20,15 @@ CMS_MBody::CMS_MBody(uint64_t msgid,
     _level = level;
 }
 
-CMS_MBody::CMS_MBody(CMS_MBody& body) {
-    _msgid = body.msgid;
-    _channel = body.channel;
-    _type = body.type;
-    _sdtime = body.sdtime;
-    _content = body.content;
-    _sdrid = body.sdrid;
-    _sdrnick = body.sdrnick;
-    _deadline = body.deadline;
-    _level = body.level;
+CMS_MBody::CMS_MBody(const CMS_MBody& body) {
+    _msgid = body._msgid;
+    _channel = body._channel;
+    _type = body._type;
+    _sdtime = body._sdtime;
+    _content = body._content;
+    _sdrid = body._sdrid;
+    _sdrnick = body._sdrnick;
+    _deadline = body._deadline;
+    _level = body._level;
 }
 

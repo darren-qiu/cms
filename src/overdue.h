@@ -9,12 +9,15 @@
 #ifndef overdue_h
 #define overdue_h
 
+#define SIZE_INIT_OVERDUE_LEN 1000
+#define SIZE_EXTD_OVERDUE_LEN 1000
+
 #include <string>
 using namespace std;
 
-typedef struct node {
-    node * father;
-    node * child;
+typedef struct duenode {
+    duenode * pHead;
+    duenode * pTail;
     uint64_t msgid;
     uint64_t deadline;
     bool flag;
@@ -26,12 +29,14 @@ class CMS_Due {
     ~CMS_Due();
 public:
     CMS_DueNode * pop();
+	// logic free, change to free list
     int free(CMS_DueNode & pnode);
-    int add(uint64_t msgid, uint64_t deadline, bool flag);
+	// after pushing , the list is ordered
+    int push(uint64_t msgid, uint64_t deadline, bool flag);
 private:
     int init_malloc(int cou);
-    int init(int cou);
-    int extend(int cou);
+    int init(int cou=SIZE_INIT_OVERDUE_LEN);
+    int extend(int cou=SIZE_EXTD_OVERDUE_LEN);
     void clear();
 private:
     CMS_DueNode * pHead;
