@@ -169,5 +169,5 @@ int cms_list<T>::clear() {
 	return 0;
 }
 
-template class cms_list<int>;
+//template class cms_list<int>;
 

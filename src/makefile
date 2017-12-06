@@ -25,9 +25,9 @@ all : $(LIB)
 	$(CC) $(CFLAGS) -c $< -o $@ $(INCLUDE_PATH) $(LIB_PATH) $(OPENCV_LIB)
 
 $(LIB) : $(OBJS)
-	rm -f $@
+	#rm -f $@
 	ar cr $@ $(OBJS)
-	rm -f $(OBJS)
+	#rm -f $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(TARGET) $(LIB)

@@ -14,6 +14,7 @@ public:
 
 template<class T>
 class cms_list {
+public:
 	cms_list() {
 		init_node();
 	}
@@ -25,10 +26,11 @@ public:
 	cms_node<T>* push_top(const T& data);
 	cms_node<T>* push_sort(const T& data);
 	cms_node<T>* pop_top();
+	int size();
 	// some functions about the free list
 	int free_node(cms_node<T>* node);	
 private:
-	//cms_node<T>* new_node();
+	cms_node<T>* get_node();
 	cms_node<T>* malloc_node(int count);
 	int init_node(int count=SIZE_INIT_LIST_DF);
 	int extd_node(int count=SIZE_EXTD_LIST_DF);
