@@ -35,8 +35,17 @@ int main(int argc, char* argv[]) {
 		}
 	} CMS_Body;
 
+	typedef cms_node<CMS_Body>* pointer;
 	cms_list<CMS_Body> list;
+	CMS_Body body;
+	body.msgid = 1;
+	body.deadline =1;
+	body.flag = true;
+	pointer p = list.push_top(body);
 	cout << "size = " << list.size() << endl;
+	p = list.pop_top();
+	cout << "msgid = " << p->data.msgid << endl;
+	
 
 	return 0;
 }

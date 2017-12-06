@@ -14,17 +14,18 @@ public:
 	cms_node<T> *prev;
 	cms_node<T> *next;
 	T data;
-	cms_node() {
+	cms_node(const T &value) {
 		prev = NULL;
 		next = NULL;
+		data = value;
 	}
 	~cms_node() {
 		if(prev != NULL) {
-			delete prev;
+			//delete prev;
 			prev = NULL;
 		}
 		if(next != NULL) {
-			delete next;
+			//delete next;
 			next = NULL;
 		}
 	}
@@ -34,11 +35,21 @@ template<class T>
 class cms_list {
 public:
 	cms_list() {
-		init_node();
+		list_head = NULL;
+		list_tail = NULL;
+		cou_list = 0;
 	}
 	~cms_list() {
 		cout << "~cms_list() start" << endl;
 		clear();
+		if(list_head != NULL) {
+			delete list_head;
+			list_head = NULL;
+		}
+		if(list_tail != NULL) {
+			delete list_tail;
+			list_tail = NULL;
+		}
 		cout << "~cms_list() end" << endl;
 	}
 public:
@@ -51,17 +62,17 @@ public:
 	int free_node(cms_node<T>* node);	
 private:
 	cms_node<T>* get_node();
-	cms_node<T>* malloc_node(int count);
-	int init_node(int count=SIZE_INIT_LIST_DF);
-	int extd_node(int count=SIZE_EXTD_LIST_DF);
-	int clear();
+	void put_node(cms_node<T>* p);
+	cms_node<T>* create_node(const T &value);
+	void destroy_node(cms_node<T> *p);
+	void clear();
 private:
 	cms_node<T> *list_head;
 	cms_node<T> *list_tail;
-	cms_node<T> *free_head;
-	cms_node<T> *free_tail;
+	//cms_node<T> *free_head;
+	//cms_node<T> *free_tail;
 	int cou_list;
-	int cou_free;
+	//int cou_free;
 	static std::allocator< cms_node<T> > alloc;
 }; // end cms_list
 
@@ -71,9 +82,8 @@ private:
 //#include "cms_list.h"
 
 template<class T>
-cms_node<T>* cms_list<T>::push_top(const T& data) {
-	cms_node<T>* node = get_node();
-	node->data = data;
+cms_node<T>* cms_list<T>::push_top(const T& value) {
+	cms_node<T>* node = create_node(value);
 	if(list_head == NULL) {
 		list_head = node;
 		list_tail = node;
@@ -81,14 +91,14 @@ cms_node<T>* cms_list<T>::push_top(const T& data) {
 		node->next = list_head;
 		list_head = node;
 	}
+	cou_list++;
 	return node;
 }
 
 template<class T>
-cms_node<T>* cms_list<T>::push_sort(const T& data) {
-	cms_node<T>* node = get_node();
-	node->data = data;
-	if(list_head == NULL) {
+cms_node<T>* cms_list<T>::push_sort(const T& value) {
+	cms_node<T>* node = create_node(value);
+	if(list_head == NULL) {	
 		list_head = node;
 		list_tail = node;
 	} else {
@@ -101,6 +111,7 @@ cms_node<T>* cms_list<T>::push_sort(const T& data) {
 		p->prev->next = node;
 		p->prev = node;
 	}
+	cou_list++;
 	return node;
 }
 
@@ -119,138 +130,71 @@ int cms_list<T>::size() {
 }
 
 template<class T>
-int cms_list<T>::free_node(cms_node<T>* node) {
-	if(list_head == node && list_tail == node) {
-		// if there is only one node
+int cms_list<T>::free_node(cms_node<T>* p) {
+	if(p == NULL) {
+		return -1;
+	} else if(p == list_head && p == list_tail) {
 		list_head = NULL;
 		list_tail = NULL;
-	} else if(list_head == node) {
-		// if the node is head node
-		list_head = node->next;
-		node->next->prev = NULL;
-	} else if(list_tail == node) {
-		// if the node is tail node
-		list_tail = node->prev;
-		node->prev->next = NULL;
+	} else if(p == list_head) {
+		list_head = p->next;
+		list_head->prev = NULL;
+	} else if(p == list_tail) {
+		list_tail = list_tail->prev;
+		list_tail->next = NULL;
 	} else {
-		node->next->prev = node->prev;
-		node->prev->next = node->next;
+		p->prev->next = p->next;
+		p->next->prev = p->prev;
 	}
-	if(free_tail == NULL) {
-		// if free list is null
-		free_head = node;
-		free_tail = node;
-		node->prev = NULL;
-		node->next = NULL;
-	} else {
-		free_tail->next = node;
-		node->prev = free_tail;
-		free_tail = node;
-		node->next = NULL;
-	}
+	destroy_node(p);
+	cou_list--;
 	return 0;
 }
 
 template<class T>
 cms_node<T>* cms_list<T>::get_node() {
-	if(free_head == NULL) {
-		extd_node();
-	}
-	cms_node<T>* node = free_head;
-	free_head = node->next;
-	free_head->prev = NULL;
-	node->next = NULL;
-	return node;
+	return alloc.allocate(1);
 }
 
 template<class T>
-cms_node<T>* cms_list<T>::malloc_node(int count) {
-	cms_node<T>* node = new cms_node<T>[count];
-	cms_node<T>* p = &node[0];
-	cout << "p0 " << p << endl;
-	p->prev = NULL;
-	p->next = &node[1];
-	for(unsigned int i=1; i<count-1; i++) {
-		p = &node[i];
-		cout << "p" << i << " " << p << endl;
-		p->prev = &node[i-1];
-		p->next = &node[i+1];
-	}
-	p->next->prev = p;
-	p->next->next = NULL;
-	return node;
+void cms_list<T>::put_node(cms_node<T> *p) {
+	alloc.deallocate(p,1);
 }
 
 template<class T>
-int cms_list<T>::init_node(int count) {
-	cout << "init_node" << endl;
-	list_head = NULL;
-	list_tail = NULL;
-	cou_list = 0;
-	cms_node<T>* node = malloc_node(count);
-	free_head = node;
-	free_tail = &node[count-1];
-	cou_free = count;
-	return 0;
+cms_node<T>* cms_list<T>::create_node(const T &value) {
+	cms_node<T> *p = get_node();
+	//alloc.construct(&(p->data), value);
+	alloc.construct(p,cms_node<T>(value));
+	return p;
 }
 
 template<class T>
-int cms_list<T>::extd_node(int count) {
-	cms_node<T>* node = malloc_node(count);
-	free_tail->next = node;
-	node->prev = free_tail;
-	free_tail = &node[count-1];
-	cou_free += count;
-	return 0;
+void cms_list<T>::destroy_node(cms_node<T> *p) {
+	cout << "destroy node " << endl;
+	//alloc.destroy(&(p->data));
+	alloc.destroy(p);
+	cout << "destroy ... " << endl;
+	put_node(p);
+	cout << "put node " << endl;
 }
 
 template<class T>
-int cms_list<T>::clear() {
-	cout << "clear" << endl;
-	int del_cou = 0, del_free_cou = 0;
-	cms_node<T>* p;
-
-	cout << "delete list " << endl;
-	while(list_head != list_tail) {
-		p = list_head;
+void cms_list<T>::clear() {
+	cout << "clear start" << endl;
+	cms_node<T> *p = list_head;
+	while(p!=list_tail) {
+		cout << "p " << p << endl;
 		list_head = p->next;
-		if(p != NULL) {
-			delete p;
-			p = NULL;
-			del_cou++;
-		}
+		destroy_node(p);
+		p = list_head;
 	}
-	if(list_head != NULL) {
-		delete list_head;
+	cout << "p - " << p << endl;
+	if(p != NULL) {
+		destroy_node(p);
 		list_head = NULL;
-		del_cou++;
+		list_tail = NULL;
 	}
-
-	cout << "delete free list " << endl;
-	while(free_head != free_tail) {
-		cout << "free_head " << free_head << endl;
-		cout << "free_tail " << free_tail << endl;
-		p = free_head;
-		cout << "p=free_head " << p << endl;
-		free_head = p->next;
-		cout << "p->next " << free_head << endl;
-		if(p != NULL) {
-			cout << "p " << p << endl;
-			delete p;
-			cout << "delete p" << endl;
-			p = NULL;
-			del_free_cou++;
-			cout << "delete p complite" << endl;
-		}
-	}
-	cout << "delete the last node in free list" << endl;
-	if(free_head != NULL) {
-		delete free_head;
-		free_head = NULL;
-		del_free_cou++;
-	}
-	cout << "clear end" << endl;
-	return 0;
 }
 
 //template class cms_list<int>;
