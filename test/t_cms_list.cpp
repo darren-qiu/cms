@@ -4,39 +4,41 @@
 
 using namespace std;
 
-int main(int argc, char* argv[]) {
+class cms_body {
+public:
+    uint64_t msgid;
+    uint64_t deadline;
+    bool flag;
+	cms_body() {}
+    ~cms_body() {}
+	cms_body(const cms_body& body) {
+        msgid = body.msgid;
+		deadline = body.deadline;
+        flag = body.flag;
+    }
+	cms_body& operator = (const cms_body& body) {
+        if(this != &body) {
+			this->msgid = body.msgid;
+            this->deadline = body.deadline;
+            this->flag = body.flag;
+        }
+		return *this;
+    }
+    bool operator < (const cms_body& body) {
+		if(deadline < body.deadline) {
+            return true;
+        } else {
+			return false;
+        }
+    }
+    uint64_t value() {
+		return deadline;
+    }
+};
 
-	typedef struct cms_body {
-	public:
-		uint64_t msgid;
-		uint64_t deadline;
-		bool flag;
-		cms_body() {}
-		~cms_body() {}
-		cms_body(const cms_body& body) {
-			msgid = body.msgid;
-			deadline = body.deadline;
-			flag = body.flag;
-		}
-		cms_body& operator = (const cms_body& body) {
-			if(this != &body) {
-				this->msgid = body.msgid;
-				this->deadline = body.deadline;
-				this->flag = body.flag;
-			}
-			return *this;
-		}
-		bool operator < (const cms_body& body) {
-			if(deadline < body.deadline) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		uint64_t value() {
-			return deadline;
-		}
-	} CMS_Body;
+typedef cms_body CMS_Body;
+
+int main(int argc, char* argv[]) {
 
 	typedef const cms_node<CMS_Body>* pointer_const;
 	typedef cms_node<CMS_Body>* pointer;

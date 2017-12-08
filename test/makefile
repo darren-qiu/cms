@@ -2,7 +2,7 @@ CC = g++
 CFLAGS := -Wall -O3 -std=c++0x
 
 INCLUDE = -I ../src/
-LIB = #-lcms -L../src/
+LIB = -lcms -L../src/
 
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
