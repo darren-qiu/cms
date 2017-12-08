@@ -1,68 +1,66 @@
-//
-//  overdue.h
-//  comm_msgsys
-//
-//  Created by 邱东洋 on 2017/12/1.
-//  Copyright © 2017年 darren. All rights reserved.
-//
-
 #ifndef overdue_h
 #define overdue_h
 
-#define SIZE_INIT_OVERDUE_LEN 1000
-#define SIZE_EXTD_OVERDUE_LEN 1000
-
 #include <string>
+#include "cms_list.h"
+
 using namespace std;
 
-typedef struct duenode {
-    duenode * pHead;
-    duenode * pTail;
-    uint64_t msgid;
-    uint64_t deadline;
-    bool flag;
-    string mainkey;
-	duenode() {
-		pHead = NULL;
-		pTail = NULL;
-		msgid = 0;
-		deadline = 0;
-		flag = false;
-		mainkey = "";
+typedef class cms_duenode {
+private:
+	uint64_t msgid;
+	uint64_t deadline;
+	bool flag;		// false: default value, true: is system message that is due
+	string mainkey;
+public:
+	cms_duenode() {
+		this->msgid = 0;
+		this->deadline = 0;
+		this->flag = false;
+		this->mainkey = "";
 	}
-	~duenode() {
-		if(pHead != NULL) {
-			delete pHead;
-			pHead = NULL;
+	~cms_duenode() {
+	};
+	cms_duenode(const cms_duenode& node) {
+		this->msgid = node.msgid;
+		this->deadline = node.deadline;
+		this->flag = node.flag;
+		this->mainkey = node.mainkey;
+	}
+	cms_duenode& operator=(const cms_duenode& node) {
+		if(this != &node) {
+			this->msgid = node.msgid;
+			this->deadline = node.deadline;
+			this->flag = node.flag;
+			this->mainkey = node.mainkey;
 		}
-		if(pTail != NULL) {
-			delete pTail;
-			pTail = NULL;
+		return *this;
+	}
+	bool operator<(const cms_duenode& node) {
+		if(this->deadline < node.deadline) {
+			return true;
+		} else {
+			return false;
 		}
 	}
-} CMS_DueNode;
+	uint64_t value() {
+		return this->deadline;
+	}
+} CMS_DUENode;
+
+typedef const cms_node<CMS_DUENode>* Const_P_DNode;
 
 class CMS_Due {
     CMS_Due();
     ~CMS_Due();
 public:
-    CMS_DueNode * pop_due();
+    CMS_DUENode * pop_due();
 	// logic free, change to free list
-    int free_due(CMS_DueNode & pnode);
+    int free_due(CMS_DUENode & pnode);
 	// after pushing , the list is ordered
     int push_due(uint64_t msgid, uint64_t deadline, bool flag);
 private:
-    int init_malloc(int cou);
-    int init(int cou=SIZE_INIT_OVERDUE_LEN);
-    int extend(int cou=SIZE_EXTD_OVERDUE_LEN);
-    int clear();
-private:
-    CMS_DueNode * pHead;
-	CMS_DueNode * pTail;
-    CMS_DueNode * pFreeHead;
-	CMS_DueNode * pFreeTail;
-    int cou;
-	int freecou;
+	cms_list<CMS_DUENode> *list;
 }; // end CMS_Due
 
 #endif /* overdue_h */

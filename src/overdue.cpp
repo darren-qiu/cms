@@ -9,37 +9,26 @@
 #include "overdue.h"
 
 CMS_Due::CMS_Due() {
+	list = new cms_list<CMS_DUENode>();
 }
 
 CMS_Due::~CMS_Due() {
+	if(list != NULL) {
+		delete list;
+		list = NULL;
+	}
 }
 
-CMS_DueNode* CMS_Due::pop_due() {
-	CMS_DueNode * pNode;
+CMS_DUENode* CMS_Due::pop_due() {
+	CMS_DUENode *pNode;
 	return pNode;
 }
 
-int CMS_Due::free_due(CMS_DueNode& node) {
+int CMS_Due::free_due(CMS_DUENode& node) {
 	return 0;
 }
 
 int CMS_Due::push_due(uint64_t msgid, uint64_t deadline, bool flag) {
-	return 0;
-}
-
-int CMS_Due::init_malloc(int count) {
-	return 0;
-}
-
-int CMS_Due::init(int count) {
-	return 0;
-}
-
-int CMS_Due::extend(int count) {
-	return 0;
-}
-
-int CMS_Due::clear() {
 	return 0;
 }
 

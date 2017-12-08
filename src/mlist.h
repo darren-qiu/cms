@@ -1,11 +1,3 @@
-//
-//  mlist.h
-//  comm_msgsys
-//
-//  Created by 邱东洋 on 2017/11/30.
-//  Copyright © 2017年 darren. All rights reserved.
-//
-
 #ifndef _MLIST_H
 #define _MLIST_H
 
