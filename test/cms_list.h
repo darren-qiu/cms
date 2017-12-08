@@ -14,7 +14,7 @@ public:
 	cms_node<T> *prev;
 	cms_node<T> *next;
 	T data;
-	cms_node(const T &value) {
+	cms_node(T &value) {
 		prev = NULL;
 		next = NULL;
 		data = value;
@@ -38,6 +38,7 @@ public:
 		list_head = NULL;
 		list_tail = NULL;
 		cou_list = 0;
+		sort_flag = 0;
 	}
 	~cms_list() {
 		cout << "~cms_list() start" << endl;
@@ -50,20 +51,22 @@ public:
 			delete list_tail;
 			list_tail = NULL;
 		}
+		sort_flag = 0;
 		cout << "~cms_list() end" << endl;
 	}
 public:
 	// some functions about the list
-	cms_node<T>* push_top(const T& data);
-	cms_node<T>* push_sort(const T& data);
-	cms_node<T>* pop_top();
+	const cms_node<T>* push_top(T& data);
+	const cms_node<T>* push_sort(T& data);
+	cms_node<T>* begin();
+	cms_node<T>* end();
 	int size();
 	// some functions about the free list
 	int free_node(cms_node<T>* node);	
 private:
 	cms_node<T>* get_node();
 	void put_node(cms_node<T>* p);
-	cms_node<T>* create_node(const T &value);
+	cms_node<T>* create_node(T &value);
 	void destroy_node(cms_node<T> *p);
 	void clear();
 private:
@@ -72,6 +75,7 @@ private:
 	//cms_node<T> *free_head;
 	//cms_node<T> *free_tail;
 	int cou_list;
+	int sort_flag;	// 0: init value, 1: list, 2: sort list.
 	//int cou_free;
 	static std::allocator< cms_node<T> > alloc;
 }; // end cms_list
@@ -82,7 +86,16 @@ private:
 //#include "cms_list.h"
 
 template<class T>
-cms_node<T>* cms_list<T>::push_top(const T& value) {
+std::allocator< cms_node<T> > cms_list<T>::alloc;
+
+template<class T>
+const cms_node<T>* cms_list<T>::push_top(T& value) {
+	if(sort_flag == 2) {
+		return NULL;
+	} else if(sort_flag == 0) {
+		sort_flag = 1;
+	}
+	
 	cms_node<T>* node = create_node(value);
 	if(list_head == NULL) {
 		list_head = node;
@@ -96,31 +109,61 @@ cms_node<T>* cms_list<T>::push_top(const T& value) {
 }
 
 template<class T>
-cms_node<T>* cms_list<T>::push_sort(const T& value) {
+const cms_node<T>* cms_list<T>::push_sort(T& value) {
+	if(sort_flag == 1) {
+		return NULL;
+	} else if(sort_flag == 0) {
+		sort_flag = 2;
+	}
+
 	cms_node<T>* node = create_node(value);
+
 	if(list_head == NULL) {	
 		list_head = node;
 		list_tail = node;
 	} else {
 		cms_node<T>* p = list_head;
-		while(!(node->data < p->data)) {
+		
+		while((p->next != NULL) && !(node->data < p->data)) {
 			p = p->next;
 		}
-		node->next = p;
-		node->prev = p->prev;
-		p->prev->next = node;
-		p->prev = node;
+
+		if(p->next == NULL) {
+			p->next = node;
+			node->prev = p;
+			node->next = NULL;
+			list_tail = node;
+		} else if (p->prev == NULL) {
+			node->next = p;
+			node->prev = NULL;
+			p->prev = node;
+			list_head = node;
+		} else {
+			node->next = p;
+			node->prev = p->prev;
+			p->prev->next = node;
+			p->prev = node;
+		}
 	}
 	cou_list++;
 	return node;
 }
 
 template<class T>
-cms_node<T>* cms_list<T>::pop_top() {
+cms_node<T>* cms_list<T>::begin() {
 	if(list_head == NULL) {
 		return NULL;
 	} else {
 		return list_head;
+	}
+}
+
+template<class T>
+cms_node<T>* cms_list<T>::end() {
+	if(list_tail == NULL) {
+		return NULL;
+	} else {
+		return list_tail;
 	}
 }
 
@@ -162,34 +205,27 @@ void cms_list<T>::put_node(cms_node<T> *p) {
 }
 
 template<class T>
-cms_node<T>* cms_list<T>::create_node(const T &value) {
+cms_node<T>* cms_list<T>::create_node(T &value) {
 	cms_node<T> *p = get_node();
-	//alloc.construct(&(p->data), value);
-	alloc.construct(p,cms_node<T>(value));
+	//alloc.construct(p,cms_node<T>(value));
+	alloc.construct(p,value);
 	return p;
 }
 
 template<class T>
 void cms_list<T>::destroy_node(cms_node<T> *p) {
-	cout << "destroy node " << endl;
-	//alloc.destroy(&(p->data));
 	alloc.destroy(p);
-	cout << "destroy ... " << endl;
 	put_node(p);
-	cout << "put node " << endl;
 }
 
 template<class T>
 void cms_list<T>::clear() {
-	cout << "clear start" << endl;
 	cms_node<T> *p = list_head;
 	while(p!=list_tail) {
-		cout << "p " << p << endl;
 		list_head = p->next;
 		destroy_node(p);
 		p = list_head;
 	}
-	cout << "p - " << p << endl;
 	if(p != NULL) {
 		destroy_node(p);
 		list_head = NULL;
@@ -197,5 +233,5 @@ void cms_list<T>::clear() {
 	}
 }
 
-//template class cms_list<int>;
+template class cms_list<int>;
 
