@@ -7,7 +7,7 @@ OPENCV_LIB_ROOT = ../lib
 SRC_PATH = .
 SRCS += $(wildcard $(SRC_PATH)/*.cpp)
 #OBJS := $(SRCS:.cpp=.o)
-OBJS = overdue.o
+OBJS = overdue.o mbody.o
 #OBJS = cms_list.o 
 LIB = libcms.a
 
