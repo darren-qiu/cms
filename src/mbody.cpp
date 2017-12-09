@@ -32,3 +32,22 @@ CMS_MBody::CMS_MBody(const CMS_MBody& body) {
     _level = body._level;
 }
 
+CMS_MBody& CMS_MBody::operator=(const CMS_MBody& body) {
+	if(this != &body) {
+		_msgid = body._msgid;
+		_channel = body._channel;
+		_type = body._type;
+		_sdtime = body._sdtime;
+		_content = body._content;
+		_sdrid = body._sdrid;
+		_sdrnick = body._sdrnick;
+		_deadline = body._deadline;
+		_level = body._level;
+	}
+	return *this;
+}
+
+uint64_t CMS_MBody::value() {
+	return _msgid;
+}
+

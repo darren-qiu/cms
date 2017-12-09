@@ -10,6 +10,7 @@
 #define _MBODY_H
 
 #include <string>
+#include "cms_list.h"
 
 using namespace std;
 
@@ -38,6 +39,9 @@ public:
               uint64_t deadline,
               char level);
     CMS_MBody(const CMS_MBody& body);
+	CMS_MBody& operator=(const CMS_MBody& body);
+	//bool operator<(const CMS_MBody& body);
+	uint64_t value();
 public:
     uint64_t _msgid;
     char _channel;

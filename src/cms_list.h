@@ -96,8 +96,10 @@ const cms_node<T>* cms_list<T>::push_top(T& value) {
 		list_tail = node;
 	} else {
 		node->next = list_head;
+		list_head->prev = node;
 		list_head = node;
 	}
+	
 	cou_list++;
 	return node;
 }
@@ -168,9 +170,9 @@ int cms_list<T>::size() {
 
 template<class T>
 int cms_list<T>::free_node(cms_node<T>* p) {
-	if(p == NULL) {
-		return -1;
-	} else if(p == list_head && p == list_tail) {
+	if(p == NULL) { 
+		return -1; 
+	} else if(p == list_head && p == list_tail) { 
 		list_head = NULL;
 		list_tail = NULL;
 	} else if(p == list_head) {
