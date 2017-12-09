@@ -2,30 +2,50 @@
 #define _INDEX_H
 
 #include <string>
-#include "cache.h"
+#include <vector>
+#include <map>
+#include "cms_list.h"
 
-#define POSTING_MAX_LEN	1024
+using namespace std;
 
-typedef struct posting {
-	CMS_Post * pUnReadHead;
-	CMS_Post * pUnReadTail;
-	CMS_Post * pReadSysHead;
-	CMS_Post * pReadSysTail;
-	int couUnRead;
-	int couReadSys;
-} CMS_Posting;
+typedef uint64_t CMS_MID;
+typedef cms_node<uint64_t> CMS_Post;
+typedef cms_list<uint64_t> CMS_Posting;
+typedef string CMS_MK;
 
-typedef string CMS_MainKey;
-
-class CMS_Index {
+typedef class cms_mvalue {
 public:
-	int add_unread_msg(CMS_MainKey& mk, uint64_t msgid);
-	int add_readsys_msg(CMS_MainKey& mk, uint64_t msgid);
-	int del_unread_msg(CMS_MainKey& mk, uint64_t msgid);
-	int get_unread_cou(CMS_MainKey& mk);
-	int get_unread_list(CMS_MainKey& mk,int start,int count,vector<uint64_t>& msgid_list);
+	cms_mvalue() {
+		p_un_read_idx = new CMS_Posting();
+		p_read_sy_idx = new CMS_Posting();
+	}
+	~cms_mvalue() {
+		if(p_un_read_idx != NULL) {
+			delete p_un_read_idx;
+			p_un_read_idx = NULL;
+		}
+		if(p_read_sy_idx != NULL) {
+			delete p_read_sy_idx;
+			p_read_sy_idx = NULL;
+		}
+	}
+public:
+	CMS_Posting * p_un_read_idx;
+	CMS_Posting * p_read_sy_idx;
+} CMS_MV;
+
+class CMS_IDX {
+public:
+	int set_uri(CMS_MK &mk, CMS_MID mid);
+	int set_rsi(CMS_MK &mk, CMS_MID mid);
+	int get_uri(CMS_MK &mk, vector<CMS_MID>& mid_list);
+	int get_rsi(CMS_MK &mk, vector<CMS_MID>& mid_list);
+	int del_uri(CMS_MK &mk, CMS_MID mid);
+	int del_rsi(CMS_MK &mk, CMS_MID mid);
+	int len_uri(CMS_MK &mk);
+	int len_rsi(CMS_MK &mk);
 private:
-	map<CMS_MainKey,CMS_Posting> index;
+	map<CMS_MK,CMS_MV> index;
 }; // end CMS_Index
 
 #endif // _POSTING_H

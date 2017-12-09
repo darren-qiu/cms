@@ -57,6 +57,7 @@ public:
 	const cms_node<T>* push_sort(T& data);
 	cms_node<T>* begin();
 	cms_node<T>* end();
+	cms_node<T>* find(T& value);
 	int size();
 	// some functions about the free list
 	int free_node(cms_node<T>* node);	
@@ -160,6 +161,25 @@ cms_node<T>* cms_list<T>::end() {
 		return NULL;
 	} else {
 		return list_tail;
+	}
+}
+
+template<class T>
+cms_node<T>* cms_list<T>::find(T& value) {
+	if(list_head == NULL) {
+		return NULL;
+	}
+	cms_node<T>* p = list_head;
+	while(NULL != p->next) {
+		if(p->data == value) {
+			return p;
+		}
+		p = p->next;
+	}
+	if(p->data == value) {
+		return p;
+	} else {
+		return NULL;
 	}
 }
 
