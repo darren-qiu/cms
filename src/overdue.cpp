@@ -19,7 +19,7 @@ CMS_Due::~CMS_Due() {
 	}
 }
 
-CMS_Const_P_DNode CMS_Due::begin() {
+CMS_P_DNode CMS_Due::begin() {
 	return this->list->begin();
 }
 

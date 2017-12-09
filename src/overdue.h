@@ -7,7 +7,7 @@
 using namespace std;
 
 typedef class cms_duenode {
-private:
+public:
 	uint64_t msgid;
 	uint64_t deadline;
 	bool flag;		// false: default value, true: is system message that is due
@@ -43,20 +43,20 @@ public:
 			return false;
 		}
 	}
-	uint64_t value() {
+	uint64_t value() const{
 		return this->deadline;
 	}
 } CMS_DUEBody;
 
-typedef const cms_node<CMS_DUEBody>* CMS_Const_P_DNode;
 typedef cms_node<CMS_DUEBody>* CMS_P_DNode;
 typedef cms_node<CMS_DUEBody> CMS_DNode;
 
 class CMS_Due {
+public:
     CMS_Due();
     ~CMS_Due();
 public:
-    CMS_Const_P_DNode begin();
+    CMS_P_DNode begin();
 	// logic free, change to free list
     int erase(CMS_P_DNode p);
 	// after pushing , the list is ordered
