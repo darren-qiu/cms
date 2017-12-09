@@ -9,7 +9,7 @@
 #include "overdue.h"
 
 CMS_Due::CMS_Due() {
-	list = new cms_list<CMS_DUENode>();
+	this->list = new cms_list<CMS_DUEBody>();
 }
 
 CMS_Due::~CMS_Due() {
@@ -19,16 +19,20 @@ CMS_Due::~CMS_Due() {
 	}
 }
 
-CMS_DUENode* CMS_Due::pop_due() {
-	CMS_DUENode *pNode;
-	return pNode;
+CMS_Const_P_DNode CMS_Due::begin() {
+	return this->list->begin();
 }
 
-int CMS_Due::free_due(CMS_DUENode& node) {
+int CMS_Due::erase(CMS_P_DNode p) {
+	return this->list->free_node(p);
+}
+
+int CMS_Due::push(CMS_DUEBody &body) {
+	this->list->push_sort(body);
 	return 0;
 }
 
-int CMS_Due::push_due(uint64_t msgid, uint64_t deadline, bool flag) {
-	return 0;
+int CMS_Due::size() {
+	return this->list->size();
 }
 

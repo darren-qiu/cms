@@ -46,21 +46,24 @@ public:
 	uint64_t value() {
 		return this->deadline;
 	}
-} CMS_DUENode;
+} CMS_DUEBody;
 
-typedef const cms_node<CMS_DUENode>* Const_P_DNode;
+typedef const cms_node<CMS_DUEBody>* CMS_Const_P_DNode;
+typedef cms_node<CMS_DUEBody>* CMS_P_DNode;
+typedef cms_node<CMS_DUEBody> CMS_DNode;
 
 class CMS_Due {
     CMS_Due();
     ~CMS_Due();
 public:
-    CMS_DUENode * pop_due();
+    CMS_Const_P_DNode begin();
 	// logic free, change to free list
-    int free_due(CMS_DUENode & pnode);
+    int erase(CMS_P_DNode p);
 	// after pushing , the list is ordered
-    int push_due(uint64_t msgid, uint64_t deadline, bool flag);
+    int push(CMS_DUEBody &body);
+	int size();
 private:
-	cms_list<CMS_DUENode> *list;
+	cms_list<CMS_DUEBody> *list;
 }; // end CMS_Due
 
 #endif /* overdue_h */
