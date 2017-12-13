@@ -5,6 +5,7 @@
 //#define SIZE_EXTD_LIST_DF 10
 
 #include <iostream>
+#include <vector>
 using namespace std;
 
 template<class T>
@@ -60,7 +61,8 @@ public:
 	cms_node<T>* find(T& value);
 	int size();
 	// some functions about the free list
-	int free_node(cms_node<T>* node);	
+	int free_node(cms_node<T>* node);
+	int get_all(vector<T>& list);
 private:
 	cms_node<T>* get_node();
 	void put_node(cms_node<T>* p);
@@ -75,13 +77,13 @@ private:
 	int cou_list;
 	int sort_flag;	// 0: init value, 1: list, 2: sort list.
 	//int cou_free;
-	static std::allocator< cms_node<T> > alloc;
+	/*static*/ std::allocator< cms_node<T> > alloc;
 }; // end cms_list
 
 #endif // _CMS_LIST_H
 
-template<class T>
-std::allocator< cms_node<T> > cms_list<T>::alloc;
+//template<class T>
+//std::allocator< cms_node<T> > cms_list<T>::alloc;
 
 template<class T>
 const cms_node<T>* cms_list<T>::push_top(T& value) {
@@ -93,15 +95,30 @@ const cms_node<T>* cms_list<T>::push_top(T& value) {
 	
 	cms_node<T>* node = create_node(value);
 	if(list_head == NULL) {
+		cout << "list_head is null, node " << node << endl;
 		list_head = node;
 		list_tail = node;
+		node->prev = NULL;
+		node->next = NULL;
+		cout << "list_head " << list_head << endl;
+		cout << "list_tail " << list_tail << endl;
+		cout << "node->prev " << node->prev << endl;
+		cout << "node->next " << node->next << endl;
 	} else {
-		node->next = list_head;
+		cout << "node " << node << endl;
+		cout << "list_head " << list_head << endl;
+		cout << "node->next " << node->next << endl;
+		node->next = (cms_node<T>*)list_head;
+		cout << "list_head->prev " << list_head->prev << endl;
 		list_head->prev = node;
+		cout << "list_head " << list_head << endl;
 		list_head = node;
+		cout << "list_head " << list_head << endl;
+		node->prev = NULL;
 	}
 	
 	cou_list++;
+	cout << "cou_list " << cou_list << endl;
 	return node;
 }
 
@@ -208,6 +225,23 @@ int cms_list<T>::free_node(cms_node<T>* p) {
 	destroy_node(p);
 	cou_list--;
 	return 0;
+}
+
+template<class T>
+int cms_list<T>::get_all(vector<T>& list) {
+	list.clear();
+	if(list_head == NULL || cou_list == 0) {
+		return 0;
+	}
+	cms_node<T>* p = list_head;
+	while(p!=list_tail) {
+		list.push_back(p->data);
+		p = p->next;
+	}
+	if(p == list_tail) {
+		list.push_back(p->data);
+	}
+	return cou_list;
 }
 
 template<class T>
