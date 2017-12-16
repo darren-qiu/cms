@@ -1,12 +1,12 @@
 #include "index.h"
 
 int CMS_IDX::set_uri(CMS_MK &mk, CMS_MID mid) {
-	cout << "mk mid " << mk << " " << mid.msgid << endl;
+	//cout << "mk mid " << mk << " " << mid.msgid << endl;
 	CMS_MV *mv = &index[mk];
-	cout << "p_un_read_idx size " << mv->p_un_read_idx->size() << endl;
-	cout << (mv->p_un_read_idx) << endl;
+	//cout << "p_un_read_idx size " << mv->p_un_read_idx->size() << endl;
+	//cout << (mv->p_un_read_idx) << endl;
 	const CMS_Post *p = mv->p_un_read_idx->push_top(mid);
-	cout << "p_un_read_idx size " << mv->p_un_read_idx->size() << endl;
+	//cout << "p_un_read_idx size " << mv->p_un_read_idx->size() << endl;
 	if(NULL == p) {
 		return -1;
 	} else {

@@ -95,30 +95,30 @@ const cms_node<T>* cms_list<T>::push_top(T& value) {
 	
 	cms_node<T>* node = create_node(value);
 	if(list_head == NULL) {
-		cout << "list_head is null, node " << node << endl;
+		//cout << "list_head is null, node " << node << endl;
 		list_head = node;
 		list_tail = node;
 		node->prev = NULL;
 		node->next = NULL;
-		cout << "list_head " << list_head << endl;
-		cout << "list_tail " << list_tail << endl;
-		cout << "node->prev " << node->prev << endl;
-		cout << "node->next " << node->next << endl;
+		//cout << "list_head " << list_head << endl;
+		//cout << "list_tail " << list_tail << endl;
+		//cout << "node->prev " << node->prev << endl;
+		//cout << "node->next " << node->next << endl;
 	} else {
-		cout << "node " << node << endl;
-		cout << "list_head " << list_head << endl;
-		cout << "node->next " << node->next << endl;
+		//cout << "node " << node << endl;
+		//cout << "list_head " << list_head << endl;
+		//cout << "node->next " << node->next << endl;
 		node->next = (cms_node<T>*)list_head;
-		cout << "list_head->prev " << list_head->prev << endl;
+		//cout << "list_head->prev " << list_head->prev << endl;
 		list_head->prev = node;
-		cout << "list_head " << list_head << endl;
+		//cout << "list_head " << list_head << endl;
 		list_head = node;
-		cout << "list_head " << list_head << endl;
+		//cout << "list_head " << list_head << endl;
 		node->prev = NULL;
 	}
 	
 	cou_list++;
-	cout << "cou_list " << cou_list << endl;
+	//cout << "cou_list " << cou_list << endl;
 	return node;
 }
 
